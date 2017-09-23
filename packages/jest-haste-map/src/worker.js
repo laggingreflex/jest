@@ -63,7 +63,12 @@ module.exports = (data: WorkerMessage, callback: WorkerCallback): void => {
     let dependencies;
 
     if (filePath.endsWith(PACKAGE_JSON)) {
-      const fileData = JSON.parse(content);
+      let fileData
+      try {
+        fileData = JSON.parse(content);
+      } catch (error) {
+        throw new Error(`${filePath} is not valid JSON.`);
+      }
       if (fileData.name) {
         id = fileData.name;
         module = [filePath, H.PACKAGE];
